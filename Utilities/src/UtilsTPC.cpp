@@ -874,26 +874,25 @@ TH3D* rescale_TH3D_axes(TH3D *h3_orig, double convert_to_mm_factor) {
 //
 bool add_to_TH3D(TH3D *h1, TH3D *h2, double weight) {
 
-  if(!h1) return false; // first histogram is required
-  if(weight==0.0 || h2==NULL) return true; // nothing to be changed!
-  if(!compare_TH3D_bins(h1, h2)) return false; // different bin widths
-  
-  if(h1->Add(h2, weight)) { // same ranges 
-  } else {                  // different ranges
-    for(int ix=1; ix<=h2->GetNbinsX(); ix++) {
-      const double x = h2->GetXaxis()->GetBinCenter(ix);
-      for(int iy=1; iy<=h2->GetNbinsY(); iy++) {
-	const double y = h2->GetYaxis()->GetBinCenter(iy);
-	for(int iz=1; iz<=h2->GetNbinsZ(); iz++) {
-	  const long index = h2->GetBin(ix, iy, iz);
-	  const double val = h2->GetBinContent(index);
-	  if(val==0.0) continue; 
-	  h1->Fill( x, y, h2->GetZaxis()->GetBinCenter(iz), val*weight);
-	}
-      }
+    if(!h1) return false; // first histogram is required
+    if(weight == 0.0 || h2 == NULL) return true; // nothing to be changed!
+    if(!compare_TH3D_bins(h1, h2)) return false; // different bin widths
+
+    if(!h1->Add(h2, weight)) { // same ranges
+        for(int ix = 1; ix <= h2->GetNbinsX(); ix++) {
+            const double x = h2->GetXaxis()->GetBinCenter(ix);
+            for(int iy = 1; iy <= h2->GetNbinsY(); iy++) {
+                const double y = h2->GetYaxis()->GetBinCenter(iy);
+                for(int iz = 1; iz <= h2->GetNbinsZ(); iz++) {
+                    const long index = h2->GetBin(ix, iy, iz);
+                    const double val = h2->GetBinContent(index);
+                    if(val == 0.0) continue;
+                    h1->Fill(x, y, h2->GetZaxis()->GetBinCenter(iz), val*weight);
+                }
+            }
+        }
     }
-  }
-  return true;
+    return true;
 }
 
 Double_t my_transfer_function(const Double_t *x, const Double_t *param)
