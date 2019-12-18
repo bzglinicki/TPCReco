@@ -1,7 +1,13 @@
 ## Installation instructions:
 
+## Docker setup (Linux):
+``
+root@user# docker run -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v /PATH_TO_TPC:/TPCReco --rm -it --user USERID akalinow/root-fedora30
+``
+
+## Compiling from source:
 ```
-git clone ssh://git@dracula.hep.fuw.edu.pl:8822/akalinowski/TPCReco.git
+git clone https://github.com/akalinowski/TPCReco.git
 cd TPCReco
 git checkout relevant_tag
 mkdir build; cd build
