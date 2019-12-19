@@ -22,11 +22,14 @@ MainFrame::MainFrame(const TGWindow *p, UInt_t w, UInt_t h)
       : TGMainFrame(p, w, h){
 
   //TEST ---
-  std::string dataFileName = "/home/akalinow/scratch/ELITPC/data/neutrons/EventTPC_2018-06-19T15:13:33.941.root"; 
-  std::string geometryFileName = "/home/akalinow/scratch/ELITPC/data/neutrons/geometry_mini_eTPC_2018-06-19T15:13:33.941.dat"; 
+  //std::string dataFileName = "/home/akalinow/scratch/ELITPC/data/neutrons/EventTPC_2018-06-19T15:13:33.941.root";
+  //std::string geometryFileName = "/home/akalinow/scratch/ELITPC/data/neutrons/geometry_mini_eTPC_2018-06-19T15:13:33.941.dat";
+  std::string geometryFileName = "/TPCReco/resources/geometry_mini_eTPC_2018-06-19T15-13-33.941.dat";
+  std::string dataFileName = "/TPCReco/resources/EventTPC_2018-06-19T15-13-33.941.root";
+
   //dataFileName = "/home/akalinow/scratch/ELITPC/data/neutrons/ROOT/EventTPC_2018-06-20T10:35:30.853_0004.root";
-  
-  myDataManager.loadGeometry(geometryFileName);  
+
+  myDataManager.loadGeometry(geometryFileName);
   myDataManager.loadDataFile(dataFileName);
   myDataManager.loadTreeEntry(0);
   myHistoManager.setGeometry(myDataManager.getGeometry());
@@ -39,7 +42,7 @@ MainFrame::MainFrame(const TGWindow *p, UInt_t w, UInt_t h)
   SetCleanup(kDeepCleanup);
   SetWMPosition(500,0);
   SetWMSize(1500,1000);
-  
+
   AddTopMenu();
   SetTheFrame();
   AddHistoCanvas();
@@ -54,7 +57,7 @@ MainFrame::MainFrame(const TGWindow *p, UInt_t w, UInt_t h)
   SetWindowName("TPC GUI");
 
   fEntryDialog->updateFileName(dataFileName);
-  
+
   fCanvas->Clear();
   fCanvas->Divide(3,3);
   TText aMessage(0.2, 0.5,"Waiting for data.");
@@ -164,13 +167,13 @@ void MainFrame::AddGoToEventDialog(int attach_top){
 					 TGNumberFormat::kNELLimitMinMax,
 					 0, myDataManager.numberOfEvents());
   fEventIdEntry->Connect("ReturnPressed()", "MainFrame", this, "DoButton()");
-  fEventIdEntry->SetToolTipText("Jump to given event id.");  
+  fEventIdEntry->SetToolTipText("Jump to given event id.");
 
   UInt_t attach_left=8, attach_right=9;
   UInt_t attach_bottom=attach_top+1;
   TGTableLayoutHints *tloh = new TGTableLayoutHints(attach_left, attach_right, attach_top, attach_bottom,
 						    kLHintsFillX | kLHintsFillY,
-						    0, 0, 5, 2);  
+						    0, 0, 5, 2);
   fFrame->AddFrame(fGframe, tloh);
   fGframe->AddFrame(fEventIdEntry, new TGLayoutHints(kLHintsExpandX, 0, 0, 0, 0));
 }
@@ -185,7 +188,7 @@ void MainFrame::AddNumbersDialog(){
   TGTableLayoutHints *tloh = new TGTableLayoutHints(attach_left, attach_right, attach_top, attach_bottom,
 						    kLHintsShrinkX|kLHintsShrinkY|
 						    kLHintsFillX|kLHintsFillY);
-  fEntryDialog->initialize();  
+  fEntryDialog->initialize();
   fFrame->AddFrame(fEntryDialog, tloh);
 
  }
@@ -244,7 +247,7 @@ void MainFrame::Update(){
   myHistoManager.setEvent(myDataManager.getCurrentEvent());
   fEntryDialog->updateEventNumbers(myDataManager.numberOfEvents(),
 				   myDataManager.currentEventNumber());
-  
+
   fCanvas->Clear();
   fCanvas->cd();
   fCanvas->Divide(3,3);
@@ -258,9 +261,9 @@ void MainFrame::Update(){
   myHistoManager.getRawStripVsTime(strip_dir)->SaveAs("histoRaw.root");
   myHistoManager.getCartesianProjection(strip_dir)->SaveAs("histoThreshold.root");
   myHistoManager.getRecHitStripVsTime(strip_dir)->SaveAs("histoRecHit.root");
-  
+
   //myHistoManager.getCartesianProjection(DIR_U)->SaveAs("histo.root");
-  
+
   for(int strip_dir=0;strip_dir<3;++strip_dir){
     ///First row
     TVirtualPad *aPad = fCanvas->cd(strip_dir+1);
@@ -271,16 +274,16 @@ void MainFrame::Update(){
     myHistoManager.getRecHitStripVsTime(strip_dir)->SaveAs(TString::Format("RecHits_%d.root", strip_dir));
     myHistoManager.drawTrack3DProjectionTimeStrip(strip_dir, aPad);
     //myHistoManager.drawTrack2DSeed(strip_dir, aPad);
-    
+
     ///Third row.
     aPad = fCanvas->cd(strip_dir+1+3+3);
     //myHistoManager.getHoughAccumulator(strip_dir).DrawClone("colz");
     //myHistoManager.getHoughAccumulator(strip_dir).SaveAs(TString::Format("HoughAccumulator_%d.root", strip_dir));
     myHistoManager.drawChargeAlongTrack3D(aPad);
-  }  
+  }
   //fCanvas->Update();    //TEST
   //return;//TEST
-  
+
   //Third row again.
   TVirtualPad *aPad = fCanvas->cd(7);
 
@@ -299,13 +302,13 @@ void MainFrame::Update(){
   aPad = fCanvas->cd(8);
   TH2D *h2D =   myHistoManager.get2DReconstruction(DIR_XY);
   if(h2D) h2D->Draw("colz");
-  else myHistoManager.getDetectorLayout()->Draw("colz 0"); 
+  else myHistoManager.getDetectorLayout()->Draw("colz 0");
   myHistoManager.drawTrack3DProjectionXY(aPad);
 
   aPad = fCanvas->cd(9);
   myHistoManager.drawChargeAlongTrack3D(aPad);
-  
-  fCanvas->Update();    
+
+  fCanvas->Update();
 }
 /////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////
@@ -368,7 +371,7 @@ void MainFrame::HandleMenu(Int_t id){
     break;
   case M_NEXT_EVENT:
     {
-     myDataManager.getNextEvent();      
+     myDataManager.getNextEvent();
       Update();
     }
     break;
