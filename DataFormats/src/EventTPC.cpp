@@ -2,7 +2,7 @@
 
 EventTPC::EventTPC(std::shared_ptr<GeometryTPC> geo_ptr) {
 	SetGeoPtr(geo_ptr);
-	Clear(); 
+	Clear();
 }
 
 
@@ -69,7 +69,7 @@ std::shared_ptr<SigClusterTPC> EventTPC::GetOneCluster(double thr, int delta_str
 		}
 	}
 
-	// debug 
+	// debug
 	//  std::cout << ">>>> GetSigCluster: nhits=" << cluster->GetNhits() << ", chargeMap.size=" << chargeMap.size() << std::endl;
 	std::cout << Form(">>>> GetSigCluster: BEFORE ENVELOPE: nhits(%d)/nhits(%d)/nhits(%d)=%ld/%ld/%ld",
 		int(projection::DIR_U), int(projection::DIR_V), int(projection::DIR_W),
@@ -120,8 +120,8 @@ std::shared_ptr<SigClusterTPC> EventTPC::GetOneCluster(double thr, int delta_str
 
 std::shared_ptr<TH2D> EventTPC::GetStripVsTime(projection strip_dir) {  // valid range [0-2]
 
-	std::shared_ptr<TH2D> result = std::make_shared<TH2D>(Form("hraw_%s_vs_time_evt%lld", EvtGeometryPtr->GetDirName(strip_dir).c_str(), event_id),
-		Form("Event-%lld: Raw signals from %s strips;Time bin [arb.u.];%s strip no.;Charge/bin [arb.u.]",
+	std::shared_ptr<TH2D> result = std::make_shared<TH2D>(Form("hraw_%s_vs_time_evt%ld", EvtGeometryPtr->GetDirName(strip_dir).c_str(), event_id),
+		Form("Event-%ld: Raw signals from %s strips;Time bin [arb.u.];%s strip no.;Charge/bin [arb.u.]",
 			event_id, EvtGeometryPtr->GetDirName(strip_dir).c_str(), EvtGeometryPtr->GetDirName(strip_dir).c_str()),
 		EvtGeometryPtr->GetAgetNtimecells(),
 		0.0 - 0.5,
@@ -145,10 +145,10 @@ std::shared_ptr<TH2D> EventTPC::GetStripVsTimeInMM(std::shared_ptr<SigClusterTPC
 
 	bool err_flag = false;
 	double zmin = 0.0 - 0.5;  // time_cell_min;
-	double zmax = 511. + 0.5; // time_cell_max;  
+	double zmax = 511. + 0.5; // time_cell_max;
 	double minTimeInMM = EvtGeometryPtr->Timecell2pos(zmin, err_flag);
 	double maxTimeInMM = EvtGeometryPtr->Timecell2pos(zmax, err_flag);
-	
+
 	auto firstStrip_offset_vec = (*EvtGeometryPtr->GetStripByDir(strip_dir, 1))().offset_vec;
 	auto lastStrip_offset_vec = (*EvtGeometryPtr->GetStripByDir(strip_dir, EvtGeometryPtr->GetDirNstrips(strip_dir)))().offset_vec;
 
@@ -159,8 +159,8 @@ std::shared_ptr<TH2D> EventTPC::GetStripVsTimeInMM(std::shared_ptr<SigClusterTPC
 		std::swap(minStripInMM, maxStripInMM);
 	}
 
-	std::shared_ptr<TH2D> result = std::make_shared<TH2D>(Form("hraw_%s_vs_time_evt%lld", EvtGeometryPtr->GetDirName(strip_dir).c_str(), event_id),
-		Form("Event-%lld: Raw signals from %s strips;Time direction [mm];%s strip direction [mm];Charge/bin [arb.u.]",
+	std::shared_ptr<TH2D> result = std::make_shared<TH2D>(Form("hraw_%s_vs_time_evt%ld", EvtGeometryPtr->GetDirName(strip_dir).c_str(), event_id),
+		Form("Event-%ld: Raw signals from %s strips;Time direction [mm];%s strip direction [mm];Charge/bin [arb.u.]",
 			event_id, EvtGeometryPtr->GetDirName(strip_dir).c_str(), EvtGeometryPtr->GetDirName(strip_dir).c_str()),
 		EvtGeometryPtr->GetAgetNtimecells(), minTimeInMM, maxTimeInMM,
 		EvtGeometryPtr->GetDirNstrips(strip_dir), minStripInMM, maxStripInMM);
@@ -266,28 +266,28 @@ Reconstr_hist EventTPC::Get(std::shared_ptr<SigClusterTPC> cluster, double radiu
 		std::cout << Form(">>>> XYZ histogram: range=[%lf, %lf] x [%lf, %lf] x [%lf, %lf], nx=%d, ny=%d, nz=%d",
 			xmin, xmax, ymin, ymax, zmin, zmax, nx, ny, nz) << std::endl;
 
-		h_all.second = std::make_shared<TH3D>(Form("hreco3D_evt%lld", event_id),
-			Form("Event-%lld: 3D reco in XYZ;X [mm];Y [mm];Z [mm]", event_id),
+		h_all.second = std::make_shared<TH3D>(Form("hreco3D_evt%ld", event_id),
+			Form("Event-%ld: 3D reco in XYZ;X [mm];Y [mm];Z [mm]", event_id),
 			nx, xmin, xmax, ny, ymin, ymax, nz, zmin, zmax);
 		//      std::cout << Form(">>>> XY histogram: range=[%lf, %lf] x [%lf, %lf], nx=%d, ny=%d",
 		//      			xmin, xmax, ymin, ymax, nx, ny) << std::endl;
 
-		h_all.first[projection::DIR_XY] = std::make_shared<TH2D>(Form("hrecoXY_evt%lld", event_id),
-			Form("Event-%lld: Projection in XY;X [mm];Y [mm];Charge/bin [arb.u.]", event_id),
+		h_all.first[projection::DIR_XY] = std::make_shared<TH2D>(Form("hrecoXY_evt%ld", event_id),
+			Form("Event-%ld: Projection in XY;X [mm];Y [mm];Charge/bin [arb.u.]", event_id),
 			nx, xmin, xmax, ny, ymin, ymax);
 
 		//      std::cout << Form(">>>> XZ histogram: range=[%lf, %lf] x [%lf, %lf], nx=%d, nz=%d",
 		//      			xmin, xmax, zmin, zmax, nx, nz) << std::endl;
 
-		h_all.first[projection::DIR_XZ] = std::make_shared<TH2D>(Form("hrecoXZ_evt%lld", event_id),
-			Form("Event-%lld: Projection in XZ;X [mm];Z [mm];Charge/bin [arb.u.]", event_id),
+		h_all.first[projection::DIR_XZ] = std::make_shared<TH2D>(Form("hrecoXZ_evt%ld", event_id),
+			Form("Event-%ld: Projection in XZ;X [mm];Z [mm];Charge/bin [arb.u.]", event_id),
 			nx, xmin, xmax, nz, zmin, zmax);
 
 		//      std::cout << Form(">>>> YZ histogram: range=[%lf, %lf] x [%lf, %lf], nx=%d, nz=%d",
 		//      			ymin, ymax, zmin, zmax, ny, nz) << std::endl;
 
-		h_all.first[projection::DIR_YZ] = std::make_shared<TH2D>(Form("hrecoYZ_evt%lld", event_id),
-			Form("Event-%lld: Projection in YZ;Y [mm];Z [mm];Charge/bin [arb.u.]", event_id),
+		h_all.first[projection::DIR_YZ] = std::make_shared<TH2D>(Form("hrecoYZ_evt%ld", event_id),
+			Form("Event-%ld: Projection in YZ;Y [mm];Z [mm];Charge/bin [arb.u.]", event_id),
 			ny, ymin, ymax, nz, zmin, zmax);
 
 		// needed for method #2 only:
