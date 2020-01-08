@@ -27,45 +27,49 @@ public:
   
   ~HistoManager();
 
-  void setEvent(EventTPC* aEvent);
+  void setEvent(std::shared_ptr<EventTPC> aEvent);
 
   void setGeometry(std::shared_ptr<GeometryTPC> aGeometryPtr);
 
   TH2Poly *getDetectorLayout() const;
 
-  std::shared_ptr<TH2D> getRawStripVsTime(int strip_dir);
+  std::shared_ptr<TH2D> getRawStripVsTime(projection strip_dir);
 
-  std::shared_ptr<TH2D> getCartesianProjection(int strip_dir);
+  std::shared_ptr<TH2D> getCartesianProjection(projection strip_dir);
 
-  std::shared_ptr<TH2D> getFilteredStripVsTime(int strip_dir);
+  std::shared_ptr<TH2D> getRecHitStripVsTime(projection strip_dir);
 
-  std::shared_ptr<TH2D> getRecHitStripVsTime(int strip_dir);
+  Reconstr_hist getReconstruction(bool force);
 
-  TH3D* get3DReconstruction();
+  std::shared_ptr<TH3D> get3DReconstruction(bool force = false);
 
-  TH2D* get2DReconstruction(int strip_dir);
+  std::shared_ptr<TH2D> get2DReconstruction(projection strip_dir, bool force = false);
 
-  const TH2D & getHoughAccumulator(int strip_dir, int iPeak=0);
+  const TH2D & getHoughAccumulator(projection strip_dir, int iPeak=0);
 
-  void drawTrack2DSeed(int strip_dir, TVirtualPad *aPad);
+  void drawTrack2DSeed(projection strip_dir, TVirtualPad *aPad);
 
   void drawTrack3D(TVirtualPad *aPad);
 
-  void drawTrack3DProjectionTimeStrip(int strip_dir, TVirtualPad *aPad);
+  void drawTrack3DProjectionTimeStrip(projection strip_dir, TVirtualPad *aPad);
 
   void drawTrack3DProjectionXY(TVirtualPad *aPad);
 
-  void drawChargeAlongTrack3D(TVirtualPad *aPad);
+  void drawChargeAlongTrack3D(TVirtualPad *aPad) const;
 
 private:
     
-  EventTPC *myEvent;
+    std::shared_ptr<EventTPC> myEvent;
 
   std::vector<TH2D*> projectionsInCartesianCoords;
-  TH3D *h3DReco;
+  std::shared_ptr<TH3D> h3DReco;
   TrackBuilder myTkBuilder;
   
   std::shared_ptr<GeometryTPC> myGeometryPtr;
+
+  Reconstr_hist reconstruction;
+
+  bool reconstruction_done = false;
 
 };
 #endif

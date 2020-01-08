@@ -4,6 +4,7 @@
 #include "TGraph.h"
 
 #include <vector>
+#include <execution>
 
 #include "TrackSegment3D.h"
 #include "CommonDefinitions.h"
@@ -12,9 +13,9 @@ class Track3D{
 
 public:
 
-  Track3D(){};
+  Track3D() = default;
 
-  ~Track3D(){};
+  ~Track3D() = default;
 
   void addSegment(const TrackSegment3D & aSegment3D);
 
@@ -59,7 +60,7 @@ private:
 
   void updateChi2();
 
-  void updateNodesChi2(int strip_dir);
+  void updateNodesChi2(projection strip_dir);
 
   void updateChargeProfile();
 
@@ -69,7 +70,7 @@ private:
 
   double getNodesChi2() const;
 
-  double myLenght, myChi2;
+  double myLenght = 0.0, myChi2 = 0.0;
   std::vector<double> segmentChi2;
   std::vector<double> nodeHitsChi2;
   std::vector<double> nodeAngleChi2;
@@ -80,7 +81,7 @@ private:
   
 };
 
-typedef std::vector<Track3D> Track3DCollection;
+using Track3DCollection = std::vector<Track3D>;
 
 std::ostream & operator << (std::ostream &out, const Track3D &aTrack);
 

@@ -14,11 +14,11 @@ class EventTPC;
 class DataManager {
 public:
   
-  DataManager();
+  DataManager() = default;
   
-  ~DataManager();
+  ~DataManager() = default;
 
-  void loadGeometry(const std::string & fileName);
+  bool loadGeometry(const std::string & fileName);
 
   void loadDataFile(const std::string & fileName);
 
@@ -26,11 +26,11 @@ public:
 
   void loadEventId(unsigned int iEvent);
 
-  EventTPC* getCurrentEvent() const;
+  std::shared_ptr<EventTPC> getCurrentEvent() const;
   
-  EventTPC* getNextEvent();
+  std::shared_ptr<EventTPC> getNextEvent();
 
-  EventTPC* getPreviousEvent();
+  std::shared_ptr<EventTPC> getPreviousEvent();
 
   unsigned int numberOfEvents() const;
 
@@ -41,12 +41,12 @@ public:
 private:
   
   std::shared_ptr<TFile> myFile;
-  TTree *myTree;
+  TTree *myTree = nullptr;
 
-  unsigned int nEvents;
+  unsigned int nEvents = 0;
   unsigned int myCurrentEntry;
 
-  EventTPC *currentEvent;
+  std::shared_ptr<EventTPC> currentEvent;
   std::shared_ptr<GeometryTPC> myGeometryPtr;
 
 };

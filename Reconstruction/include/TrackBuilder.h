@@ -1,3 +1,4 @@
+
 #ifndef _TrackBuilder_H_
 #define _TrackBuilder_H_
 
@@ -5,8 +6,22 @@
 #include <vector>
 #include <memory>
 #include <tuple>
+#include <cstdlib>
+#include <iostream>
 
 #include <Fit/Fitter.h>
+
+#include "TVector3.h"
+#include "TProfile.h"
+#include "TObjArray.h"
+#include "TF1.h"
+#include "TFitResult.h"
+#include "Math/Functor.h"
+#include "TH1D.h"
+
+#include "GeometryTPC.h"
+#include "EventTPC.h"
+#include "SigClusterTPC.h"
 
 #include "TrackSegment2D.h"
 #include "TrackSegment3D.h"
@@ -23,15 +38,15 @@ public:
   
   TrackBuilder();
   
-  ~TrackBuilder();
+  ~TrackBuilder() = default;
 
-  void setEvent(EventTPC* aEvent);
+  void setEvent(std::shared_ptr<EventTPC> aEvent);
 
   void setGeometry(std::shared_ptr<GeometryTPC> aGeometryPtr);
 
   void reconstruct();
 
-  const SigClusterTPC & getCluster() const { return myCluster;}
+  const std::shared_ptr<SigClusterTPC> getCluster() const { return myCluster;}
 
   const TH2D & getRecHits2D(int iDir) const;
 
@@ -64,8 +79,8 @@ private:
   double fitTrackSplitPoint(const Track3D& aTrackCandidate) const;
 
     
-  EventTPC *myEvent;
-  SigClusterTPC myCluster;
+  std::shared_ptr<EventTPC> myEvent;
+  std::shared_ptr<SigClusterTPC> myCluster;
   std::shared_ptr<GeometryTPC> myGeometryPtr;
 
   bool myHistoInitialized;
