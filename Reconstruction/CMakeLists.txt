@@ -24,10 +24,12 @@ include_directories(${PROJECT_SOURCE_DIR}/DataFormats/include)
 # Compiler flags.
 #
 add_library(${MODULE_NAME} SHARED ${sources})
+
 target_link_libraries(${MODULE_NAME} ${ROOT_LIBRARIES})
 
 # All install commands get the same destination. this allows us to use paths
 # relative to the executable.
 install(TARGETS ${MODULE_NAME} LIBRARY DESTINATION lib)
+
 
 
