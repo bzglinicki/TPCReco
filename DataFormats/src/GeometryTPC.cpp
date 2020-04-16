@@ -405,12 +405,12 @@ bool GeometryTPC::InitTH2Poly() {
 		int npads = strip_data.npads;
 		//  const int npads =int( strip_data->Length()/pad_pitch );
 		const int npoints = npads * offset_vec.size();
-		auto g = std::make_unique<TGraph>(npoints);
+		auto graph = std::make_unique<TGraph>(npoints);
 		int ipoint = 0;
 		for (int ipad = 0; ipad < npads; ipad++) {
 			for (size_t icorner = 0; icorner < offset_vec.size(); icorner++) {
 				TVector2 corner = point0 + strip_data.unit_vec * ipad * pad_pitch + offset_vec[icorner];
-				g->SetPoint(ipoint, corner.X(), corner.Y());
+				graph->SetPoint(ipoint, corner.X(), corner.Y());
 				ipoint++;
 			}
 		}
@@ -420,7 +420,7 @@ bool GeometryTPC::InitTH2Poly() {
 		for (int ipad = npads - 1; ipad >= 0; ipad--) {
 			for (size_t icorner = 0; icorner < offset_vec.size(); icorner++) {
 				TVector2 corner = point0 + strip_data.unit_vec * ipad * pad_pitch + offset_vec[icorner];
-				g->SetPoint(ipoint, corner.X(), corner.Y());
+				graph->SetPoint(ipoint, corner.X(), corner.Y());
 				ipoint++;
 			}
 		}
@@ -433,11 +433,11 @@ bool GeometryTPC::InitTH2Poly() {
 		// DEBUG      
 
 		// primary method:
-		//      const int ibin = tp->AddBin(g);
+		//      const int ibin = tp->AddBin(graph);
 
 		// alternative method due to bin endexing bug in TH2Poly::AddBin() implementation:
 		const int nbins_old = tp->GetNumberOfBins();
-		int ibin = tp->AddBin(g.get());
+		int ibin = tp->AddBin(graph.get());
 		const int nbins_new = tp->GetNumberOfBins();
 		if (nbins_new > nbins_old) {
 			TH2PolyBin* bin = (TH2PolyBin*)tp->GetBins()->At(tp->GetNumberOfBins() - 1);
@@ -469,7 +469,7 @@ bool GeometryTPC::InitTH2Poly() {
 				<< ", NPADS=" << npads
 				<< ", NPOINTS=" << npoints << ", TGraph->Print():"
 				<< std::endl;
-			g->Print();
+			graph->Print();
 			std::cerr << std::endl << std::flush;
 			return false;
 			//	continue; 
@@ -487,7 +487,7 @@ bool GeometryTPC::InitTH2Poly() {
 				<< std::endl;
 		}
 		// DEBUG
-
+		graph.release();
 	//  }
 	}
 
