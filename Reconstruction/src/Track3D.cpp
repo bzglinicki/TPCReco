@@ -352,7 +352,7 @@ double Track3D::chi2FromSplitPoint(const double* par) {
 std::ostream& operator << (std::ostream& out, const Track3D& aTrack) {
 
 	out << "Number of segments: " << aTrack.getSegments().size() << std::endl;
-	if (!aTrack.getSegments().size()) return out;
+	if (aTrack.getSegments().size() == 0) return out;
 
 	std::cout << "\t Path: start->end [chi2]: " << std::endl;
 	for (auto aSegment : aTrack.getSegments()) out << "\t \t" << aSegment << std::endl;

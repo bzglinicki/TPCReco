@@ -120,9 +120,6 @@ GeometryTPC::GeometryTPC(std::string fname)
 		std::cout << "GeometryTPC::Constructor - Started..." << std::endl;
 	}
 
-	tp = std::make_shared<TH2Poly>();
-	tp->SetName("h_uvw_dummy");
-
 	// FPN channels in each AGET chip
 	AGET_Nchan_fpn = FPN_chanId.size();
 	AGET_Nchan_raw = AGET_Nchan + AGET_Nchan_fpn;
@@ -330,8 +327,6 @@ bool GeometryTPC::InitTH2Poly() {
 		std::cout << "GeometryTPC::InitTH2Poly - Started..." << std::flush << std::endl;
 	}
 
-	fStripMap.clear();
-
 	// sanity checks
 	if (grid_nx < 1 || grid_ny < 1) {
 		if (is_debug) {
@@ -371,7 +366,7 @@ bool GeometryTPC::InitTH2Poly() {
 	for (auto& strip_it : stripArray) {
 		auto& strip_data = (*strip_it.second)();
 		TVector2 point1 = reference_point + strip_data.offset_vec - strip_data.unit_vec * 0.5 * pad_pitch;
-		TVector2 point2 = point1 + strip_data.unit_vec * /*strip_data.length()*/ strip_data.npads * Geometry().GetPadPitch();
+		TVector2 point2 = point1 + strip_data.unit_vec * /*strip_data.length()*/ strip_data.npads * GetPadPitch();
 		xmax = std::max({ xmax, point1.X(), point2.X() });
 		xmin = std::min({ xmin, point1.X(), point2.X() });
 		ymax = std::max({ ymax, point1.Y(), point2.Y() });
@@ -442,7 +437,7 @@ bool GeometryTPC::InitTH2Poly() {
 
 		// alternative method due to bin endexing bug in TH2Poly::AddBin() implementation:
 		const int nbins_old = tp->GetNumberOfBins();
-		int ibin = tp->AddBin(&*g);
+		int ibin = tp->AddBin(g.get());
 		const int nbins_new = tp->GetNumberOfBins();
 		if (nbins_new > nbins_old) {
 			TH2PolyBin* bin = (TH2PolyBin*)tp->GetBins()->At(tp->GetNumberOfBins() - 1);
@@ -508,7 +503,7 @@ void GeometryTPC::SetTH2PolyPartition(int nx, int ny) {
 	bool change = false;
 	if (nx > 1 && nx != grid_nx) { grid_nx = nx; change = true; }
 	if (ny > 1 && ny != grid_ny) { grid_ny = ny; change = true; }
-	if (change && tp) tp->ChangePartition(grid_nx, grid_ny);
+	if (change && tp != nullptr) tp->ChangePartition(grid_nx, grid_ny);
 }
 
 void GeometryTPC::SetTH2PolyStrip(int ibin, std::shared_ptr<Geometry_Strip> s) {
@@ -597,7 +592,7 @@ bool GeometryTPC::GetCrossPoint(std::shared_ptr<Geometry_Strip> strip1, std::sha
 	double len2 = W2 / W;
 	double residual = 0.5 * pad_pitch;
 	if (len1<-residual - NUM_TOLERANCE || len2<-residual - NUM_TOLERANCE ||
-		len1 > /*op1.length()*/ op1.npads * Geometry().GetPadPitch() + NUM_TOLERANCE || len2 > /*op2.length()*/ op2.npads * Geometry().GetPadPitch() + NUM_TOLERANCE) return false;
+		len1 > /*op1.length()*/ op1.npads * GetPadPitch() + NUM_TOLERANCE || len2 > /*op2.length()*/ op2.npads * GetPadPitch() + NUM_TOLERANCE) return false;
 	point.Set(op1.offset_vec.X() + len1 * op1.unit_vec.X(), op1.offset_vec.Y() + len1 * op1.unit_vec.Y());
 	point += reference_point;
 	return true;

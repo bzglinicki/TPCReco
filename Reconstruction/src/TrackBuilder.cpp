@@ -8,12 +8,12 @@ TrackBuilder::TrackBuilder() {
 	nAccumulatorPhiBins = 100;//FIX ME move to configuarable
 
 	myHistoInitialized = false;
-
-	fitter.Config().MinimizerOptions().SetMinimizerType("GSLSimAn");
-	fitter.Config().MinimizerOptions().SetMaxFunctionCalls(1E6);
-	fitter.Config().MinimizerOptions().SetMaxIterations(1E6);
-	fitter.Config().MinimizerOptions().SetTolerance(1E-2);
-	fitter.Config().MinimizerOptions().Print(std::cout);
+	auto& MinOpt = fitter.Config().MinimizerOptions();
+	MinOpt.SetMinimizerType("GSLSimAn");
+	MinOpt.SetMaxFunctionCalls(1E6);
+	MinOpt.SetMaxIterations(1E6);
+	MinOpt.SetTolerance(1E-2);
+	MinOpt.Print(std::cout);
 
 	///An offset used for filling the Hough transformation.
 	///to avoid having very small rho parameters, as

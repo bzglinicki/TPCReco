@@ -22,7 +22,6 @@ int main() {
     Geometry(geometryFileName); //initialize GeometryTPC before first use
     DataManager aDataManager;
     TrackBuilder aTkBuilder;
-    checkpoint;
     //aDataManager.loadDataFile(dataFileName);
     //aDataManager.loadTreeEntry(3);
     aDataManager.loadEvent(dataFileName);
