@@ -4,6 +4,7 @@
 #include <RQ_OBJECT.h>
 #include <TGFrame.h>
 #include <TGCanvas.h>
+#include <TVirtualX.h>
 
 
 class ScrollFrame {

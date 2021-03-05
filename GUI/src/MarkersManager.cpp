@@ -68,6 +68,9 @@ void MarkersManager::initialize(){
   secondMarker = 0;
   currentLine = 0;
 
+  markerMoveX = 0;
+  markerMoveY = 0;
+
 }
 /////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////
@@ -128,10 +131,35 @@ void MarkersManager::addMarkerFrame(int iMarker){
 /////////////////////////////////////////////////////////
 void MarkersManager::HandleMarkerPosition(Int_t event, Int_t x, Int_t y, TObject *sel){
 
-  TObject *select = gPad->GetSelected();
+    TObject *select = gPad->GetSelected();
     std::string objName = "";
     if(select) objName = std::string(select->GetName());
-    
+
+    if(event == 1 && sel->IsA() == TMarker::Class())
+    {
+        TVirtualPad *aCurrentPad = gPad->GetSelectedPad();
+        aCurrentPad->cd();
+
+        markerMoveX = aCurrentPad->AbsPixeltoX(x);
+        markerMoveY = aCurrentPad->AbsPixeltoY(y);
+    }
+
+    if(event == 11 && sel->IsA() == TMarker::Class())
+    {
+        TVirtualPad *aCurrentPad = gPad->GetSelectedPad();
+        aCurrentPad->cd();
+
+        float newX = aCurrentPad->AbsPixeltoX(x);
+        float newY = aCurrentPad->AbsPixeltoY(y);
+
+        if(markerMoveX != newX || markerMoveY != newY)
+        {
+             std::cout << "Marker moved." << std::endl;
+             std::cout << "\tOld position: " << markerMoveX << " " << markerMoveY << std::endl;
+             std::cout << "\tNew position: " << newX << " " << newY << std::endl;
+        }
+    }
+
     if(event == kButton1 && objName.find("vs_time")!=std::string::npos){      
       std::cout<<"select->GetName(): "<<objName<<std::endl;
       TH2F *aHisto = (TH2F*)gROOT->FindObject(objName.c_str());

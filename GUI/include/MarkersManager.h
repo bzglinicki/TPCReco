@@ -40,6 +40,8 @@ private:
   std::vector<TMarker*> fMarkersContainer;
   int tmp=0;
 
+  float markerMoveX;
+  float markerMoveY;
 
 };
 
